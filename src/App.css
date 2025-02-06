@@ -1,0 +1,38 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.main-wrapper {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.selected-item-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px;
+  align-items: center;
+}
+
+.selected-item {
+  display: flex;
+  padding: 4px 10px;
+  background-color: black;
+  color: white;
+  gap: 32px;
+}
+
+.change-button {
+  cursor: pointer;
+  padding: 4px 10px;
+  background-color: darkgreen;
+  color: white;
+}

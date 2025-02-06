@@ -1,0 +1,14 @@
+.close-button {
+  position: relative;
+  cursor: pointer;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    height: 100%;
+    width: 0.5px;
+    background-color: white;
+  }
+}
