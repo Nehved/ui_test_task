@@ -19,7 +19,7 @@ function App() {
           onSelect={handleSelect}
         />
       )}
-      <p>You currently have {selectedItems.length} selected items</p>
+      <p>You currently have {selectedItems.length} selected {selectedItems.length === 1 ? 'item' : 'items'}</p>
       <div className="selected-item-wrapper">
         {selectedItems.map((item) => (
           <SelectedItem item={item} key={item} />

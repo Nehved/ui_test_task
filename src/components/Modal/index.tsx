@@ -1,4 +1,4 @@
-import {FC, useCallback, useMemo, useState} from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import './style.css';
 
 import { SelectedItem } from '../SelectedItem';
@@ -10,20 +10,39 @@ interface IModalProps {
   onSelect: (id: string[]) => void
 }
 
-const NO_FILTER = 'no filter';
+const filters = [
+  {
+    value: 0,
+    label: 'no filter',
+  },
+  {
+    value: 10,
+    label: '< 10',
+  },
+  {
+    value: 50,
+    label: '< 50',
+  },
+  {
+    value: 100,
+    label: '< 100',
+  },
+]
 const items: string[] = Array.from({ length: 300 }, (_, i) => `Item ${i + 1}`);
 
 const Modal: FC<IModalProps> = ({ onClose, onSelect, selectedItems }) => {
   const [search, setSearch] = useState("");
   const [selectedItemsLocal, setSelectedItemsLocal] = useState<string[]>(selectedItems);
-  const [filter, setFilter] = useState<string>(NO_FILTER);
+  const [filter, setFilter] = useState<string>('0');
 
   const filteredItems = useMemo(() => {
-    const searchedItems = items.filter((id) => id.includes(search));
-    if (filter === NO_FILTER) {
+    const searchedItems = items.filter((id) =>
+      id.toLowerCase().includes(search.toLowerCase())
+    );
+    if (filter === '0') {
       return searchedItems;
     }
-    return searchedItems.filter((item) => parseInt(item.split(' ')[1]) < parseInt(filter.split(' ')[1]));
+    return searchedItems.filter((id) => parseInt(id.split(' ')[1]) < parseInt(filter));
   }, [search, filter]);
 
   const handleSelect = useCallback((id: string) => {
@@ -41,7 +60,7 @@ const Modal: FC<IModalProps> = ({ onClose, onSelect, selectedItems }) => {
   const onSave = useCallback(() => {
     onSelect(selectedItemsLocal);
     onClose();
-  }, [selectedItemsLocal]);
+  }, [selectedItemsLocal, onClose, onSelect]);
 
   return (
     <div className="modal">
@@ -51,25 +70,27 @@ const Modal: FC<IModalProps> = ({ onClose, onSelect, selectedItems }) => {
         <div className="settings">
           <input className="settings-item" type="text" placeholder="Search items" onChange={(e) => setSearch(e.target.value)} />
           <select className="settings-item" onChange={(e) => setFilter(e.target.value)}>
-            <option>no filter</option>
-            <option>&lt; 10</option>
-            <option>&lt; 50</option>
-            <option>&lt; 100</option>
+            {filters.map((item) => (
+              <option key={item.value} value={item.value}>{item.label}</option>
+            ))}
           </select>
         </div>
         <div className="list-wrapper">
-          {filteredItems.map((item) => (
-            <Item
-              item={item}
-              key={item}
-              isSelected={selectedItemsLocal.includes(item)}
-              isDisabled={selectedItemsLocal.length >= 3 && !selectedItemsLocal.includes(item)}
-              onSelect={handleSelect}
-            />
-          ))}
+          {filteredItems.length ? filteredItems.map((item) => {
+            const isSelected = selectedItemsLocal.includes(item);
+            return (
+              <Item
+                item={item}
+                key={item}
+                isSelected={isSelected}
+                isDisabled={selectedItemsLocal.length >= 3 && !isSelected}
+                onSelect={handleSelect}
+              />
+            )
+          }) : <span>Nothing found</span>}
         </div>
         <div className="selected-item-print">
-          <p className="sub-title">Current selected items:</p>
+          <p className="sub-title">Current selected {selectedItemsLocal.length === 1 ? 'item' : 'items'}:</p>
           <div className={"selected-item-wrapper"}>
             {selectedItemsLocal.length > 0 ? selectedItemsLocal.map((elem) => (
               <SelectedItem item={elem} onClick={handleSelect} key={elem} />

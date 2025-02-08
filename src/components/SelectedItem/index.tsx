@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import { FC } from 'react';
 import './style.css';
 
 interface ISelectedItemProps {
